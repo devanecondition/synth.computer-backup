@@ -1,13 +1,19 @@
 import React from 'react';
 import {Route} from 'react-router';
+import Main from 'components/main/main';
+import Voice from 'components/voice/voice';
+import TempKnob from 'components/temp-knob/temp-knob';
 
-import Main from 'components/main';
-import Example from 'components/example';
+import {RouteHandler, Link} from 'react-router';
+
 
 const routes = (
-  <Route handler={Main}>
-    <Route name='example' handler={Example}/>
-  </Route>
+	<Route>
+		<Route name='/' handler={Main}/>
+		<Route name='main' handler={Main}/>
+		<Route name='voice' handler={Voice}/>
+		<Route name='temp-knob' handler={TempKnob}/>
+  	</Route>
 );
 
 export default routes;
