@@ -21,17 +21,18 @@ export default class Voice extends React.Component {
 							},
 							value: 'off'
 						},
-						// {
-						// 	name:'BPM',
-						// 	type: 'knob',
-						// 	options: {
-						// 		range: {
-						// 			min: 0,
-						// 			max:350
-						// 		}
-						// 	},
-						// 	value: 240
-						// }
+						{
+							name:'BPM',
+							type: 'knob',
+							options: {
+								min: 20,
+								max: 350,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 240
+						}
 					]
 				},
 				{
@@ -50,23 +51,124 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'VCO',
-					ui: []
+					ui: [
+						{
+							name:'Fine Tune',
+							type: 'knob',
+							options: {
+								min: -20,
+								max: 20,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 0
+						}
+					]
 				},
 				{
 					name: 'VCA',
-					ui: []
+					ui: [
+						{
+							name:'Attenuator',
+							type: 'knob',
+							options: {
+								min: 0,
+								max: 100,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 50
+						}
+					]
 				},
 				{
 					name: 'Envelope Generator',
-					ui: []
+					ui: [
+						{
+							name:'Attack',
+							type: 'knob',
+							options: {
+								min: 0,
+								max: 100,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 0
+						},
+						{
+							name:'Release',
+							type: 'knob',
+							options: {
+								min: 0,
+								max: 100,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 23
+						}
+					]
 				},
 				{
 					name: 'Filter',
-					ui: []
+					ui: [
+						{
+							name:'Frequency',
+							type: 'knob',
+							options: {
+								min: 25,
+								max: 10000,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 2600
+						},
+						{
+							name:'Resonance',
+							type: 'knob',
+							options: {
+								min: 0,
+								max: 100,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 62
+						}
+					]
 				},
 				{
 					name: 'Delay',
-					ui: []
+					ui: [
+						{
+							name:'Time',
+							type: 'knob',
+							options: {
+								min: 0,
+								max: 100,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 38
+						},
+						{
+							name:'Delay',
+							type: 'knob',
+							options: {
+								min: 0,
+								max: 100,
+								angleOffset: "-125",
+								angleArc: "250",
+								fgColor: "#999"
+							},
+							value: 40
+						}
+					]
 				},
 				{
 					name: 'Output',

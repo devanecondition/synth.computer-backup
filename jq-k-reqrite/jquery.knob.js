@@ -26,7 +26,7 @@
     };
 
     var Dial = function () {
-        this.options = null; // array of options
+        this.options = {}; // array of options
         this.$ = null; // jQuery wrapped element
         this.input = null; // mixed HTMLInputElement or array of HTMLInputElement
         this.graphics = null; // deprecated 2D graphics context for 'pre-rendering'
@@ -67,7 +67,6 @@
         if (this.$.data('kontroled')) return;
         this.$.data('kontroled', true);
 
-        this.extend();
         this.options = this.extendOptions();
 
         // finalize options
@@ -127,6 +126,12 @@
 
     thisDial.extendOptions = function() {
         return $.extend({
+
+            bgColor: this.$.data('bgcolor') || '#EEEEEE',
+            angleOffset: this.$.data('angleoffset') || 0,
+            angleArc: this.$.data('anglearc') || 360,
+            inline: true,
+
             // Config
             min: this.$.data('min') !== undefined ? this.$.data('min') : 0,
             max: this.$.data('max') !== undefined ? this.$.data('max') : 100,
@@ -489,15 +494,6 @@
         }
     };
 
-    thisDial.extend = function () {
-        this.options = $.extend({
-            bgColor: this.$.data('bgcolor') || '#EEEEEE',
-            angleOffset: this.$.data('angleoffset') || 0,
-            angleArc: this.$.data('anglearc') || 360,
-            inline: true
-        }, this.options);
-    };
-
     thisDial.val = function (value, triggerRelease) {
         if (null != value) {
 
@@ -742,7 +738,23 @@
     };
 
     thisDial.draw = function () {
-
+if (this.value === 35 && this.options.angleArc == 250) {
+console.log(
+    'this.graphics', this.graphics,
+    '\nthis.changeValue', this.changeValue,
+    '\nthis.arc(this.changeValue)', this.arc(this.changeValue),
+    '\nthis.graphics.lineWidth', this.graphics.lineWidth,
+    '\nthis.graphics.lineCap', this.graphics.lineCap,
+    '\nthis.options.bgColor', this.options.bgColor,
+    '\nthis.xy', this.xy,
+    '\nthis.radius', this.radius,
+    '\nthis.endAngle', this.endAngle,
+    '\nthis.startAngle', this.startAngle,
+    '\nthis.options.displayPrevious', this.options.displayPrevious,
+    '\nthis.pColor', this.pColor,
+    '\nthis.options', this.options
+);
+}
         var graphics = this.graphics,                 // context
             arc = this.arc(this.changeValue),      // Arc
             previousArc,                         // Previous arc
