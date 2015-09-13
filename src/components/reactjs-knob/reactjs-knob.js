@@ -167,14 +167,27 @@ class KnobCanvas extends React.Component {
     _xy() {
 
         var el = React.findDOMNode(this);
+        var el2 = el;
 
         this.x = 0;
         this.y = 0;
 
-        while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
-            this.x += el.offsetLeft - el.scrollLeft;
-            this.y += el.offsetTop - el.scrollTop;
-            el = el.offsetParent;
+        if (document.getElementById || document.all) {
+            do  {
+                this.x += el.offsetLeft-el.scrollLeft;
+                this.y += el.offsetTop-el.scrollTop;
+                el = el.offsetParent;
+                el2 = el2.parentNode;
+                while (el2 != el) {
+                    this.x -= el2.scrollLeft;
+                    this.y -= el2.scrollTop;
+                    el2 = el2.parentNode;
+                }
+            } while (el.offsetParent);
+
+        } else if (document.layers) {
+            this.y += el.y;
+            this.x += el.x;
         }
 
         return this;
@@ -324,7 +337,6 @@ class KnobCanvas extends React.Component {
     }
 
     _mouseDown(event) {
-        if (this.options.readOnly) { return; }
         this._mouseMove.call(this,event);
         document.addEventListener('mousemove', this._mouseMove);
     }
