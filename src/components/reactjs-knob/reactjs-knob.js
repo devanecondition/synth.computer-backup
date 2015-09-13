@@ -66,6 +66,7 @@ class KnobCanvas extends React.Component {
         this.cursorExt = null;
         this.w2 = null;
         this.PI2 = 2*Math.PI;
+        this._mouseMove = this.mouseMove.bind(this);
 	}
 
     _makeComponent() {
@@ -309,32 +310,32 @@ class KnobCanvas extends React.Component {
         return Math.round(val * 100) / 100;
     }
 
-    _mouse(event) {
+    mouseMove(event) {
 
-        var _this = this;
+        var value = this.xy2val(event.pageX, event.pageY);
 
-        var mouseMove = function (event, _this) {
+        if (value == this.changeValue) return;
 
-            var value = _this.xy2val(event.pageX, event.pageY);
+        if (this.changeHook && (this.changeHook(value) === false)) return;
 
-            if (value == _this.changeValue) return;
+        this.component.setState({
+            value: value
+        });
+    }
 
-            if (_this.changeHook && (_this.changeHook(value) === false)) return;
+    _mouseDown(event) {
+        if (this.options.readOnly) { return; }
+        this._mouseMove.call(this,event);
+        document.addEventListener('mousemove', this._mouseMove);
+    }
 
-            _this.component.setState({
-                value: value
-            });
-            // _this.change(_this._validate(value));
-            // _this._draw();
-        };
-
-        // First click
-        mouseMove(event, _this);
+    _mouseUp(event) {
+        document.removeEventListener('mousemove', this._mouseMove);
     }
 
 	render() {
 		return (
-			<canvas height={this.props.height} width={this.props.width} onMouseDown={this._mouse.bind(this)}></canvas>
+			<canvas height={this.props.height} width={this.props.width} onMouseDown={this._mouseDown.bind(this)} onMouseUp={this._mouseUp.bind(this)}></canvas>
 		);
 	}
 }
