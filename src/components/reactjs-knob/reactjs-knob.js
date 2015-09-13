@@ -74,9 +74,6 @@ class KnobCanvas extends React.Component {
         //     G_vmlCanvasManager.initElement(this.$canvas[0]);
         // }
 
-        this.canvasContext = this.setCanvasContext();
-        this.scale = this.setScale();
-
         // prepares props for transaction
         if (this.value instanceof Object) {
             this.changeValue = {};
@@ -92,12 +89,14 @@ class KnobCanvas extends React.Component {
             ._draw();
     }
 
-	componentDidMount(component) {
+    componentDidMount(component) {
+        this.canvasContext = this.setCanvasContext();
+        this.scale = this.setScale();
         this._makeComponent();
 	}
 
 	componentDidUpdate() {
-console.log('componentDidUpdate', this.component.state.value);
+        this.canvasContext.clearRect(0, 0, this.props.width, this.props.height);
         this.value = this.component.state.value;
         this._makeComponent();
 	}
@@ -165,10 +164,17 @@ console.log('componentDidUpdate', this.component.state.value);
     }
 
     _xy() {
-        var node = React.findDOMNode(this);
 
-        this.x = 1;
-        this.y = 1;
+        var el = React.findDOMNode(this);
+
+        this.x = 0;
+        this.y = 0;
+
+        while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+            this.x += el.offsetLeft - el.scrollLeft;
+            this.y += el.offsetTop - el.scrollTop;
+            el = el.offsetParent;
+        }
 
         return this;
     }
@@ -292,17 +298,7 @@ console.log('componentDidUpdate', this.component.state.value);
         }
 
         ret = ~~ (0.5 + (angle * (this.options.max - this.options.min) / this.angleArc)) + this.options.min;
-console.log(
-    'this.w2',this.w2,
-    '\nx',x,
-    '\ny',y,
-    '\nangle', angle,
-    '\nthis.options.max',this.options.max, 
-    '\nthis.options.min',this.options.min,
-    '\nthis.angleArc',this.angleArc,
-    '\nret',ret,
-    '\nret = (angle * (this.options.max - this.options.min) / this.angleArc) + this.options.min'
-);
+
         this.options.stopper && (ret = privates.max(privates.min(ret, this.options.max), this.options.min));
 
         return ret;
