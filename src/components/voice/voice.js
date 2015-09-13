@@ -26,10 +26,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 20,
-								max: 350,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 350
 							},
 							value: 240
 						}
@@ -57,10 +54,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: -20,
-								max: 20,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 20
 							},
 							value: 0
 						}
@@ -74,10 +68,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 0,
-								max: 100,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 100
 							},
 							value: 50
 						}
@@ -91,10 +82,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 0,
-								max: 100,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 100
 							},
 							value: 0
 						},
@@ -103,10 +91,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 0,
-								max: 100,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 100
 							},
 							value: 23
 						}
@@ -120,10 +105,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 25,
-								max: 10000,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 10000
 							},
 							value: 2600
 						},
@@ -132,10 +114,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 0,
-								max: 100,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 100
 							},
 							value: 62
 						}
@@ -149,10 +128,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 0,
-								max: 100,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 100
 							},
 							value: 38
 						},
@@ -161,10 +137,7 @@ export default class Voice extends React.Component {
 							type: 'knob',
 							options: {
 								min: 0,
-								max: 100,
-								angleOffset: "-125",
-								angleArc: "250",
-								fgColor: "#999"
+								max: 100
 							},
 							value: 40
 						}
@@ -176,10 +149,6 @@ export default class Voice extends React.Component {
 				}
 			]
 		};
-	}
-
-	getModules() {
-
 	}
 
 	render() {

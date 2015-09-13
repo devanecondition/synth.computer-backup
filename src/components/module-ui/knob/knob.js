@@ -10,16 +10,27 @@ var privates = {
     }
 };
 
-export default class Knob extends React.Component {
+class KnobWrapper extends React.Component {
+
+	constructor() {
+		super();
+	}
+
+	render() {
+		return (
+			<div style={{display:'inline', height: this.props.height + 'px', width: this.props.width + 'px'}}>
+          		{this.props.children}
+			</div>
+		);
+	}	
+}
+
+class KnobCanvas extends React.Component {
 
 	constructor( props ) {
 		super();
-        this.options = {
 
-            bgColor: props.bgcolor || '#EEEEEE',
-            angleOffset: props.options.angleOffset || 0,
-            angleArc: props.options.angleArc || 360,
-            inline: true,
+        this.options = {
 
             // Config
             min: props.options.min !== undefined ? props.options.min : 0,
@@ -35,7 +46,6 @@ export default class Knob extends React.Component {
             height: props.height || 200,
             displayInput: props.displayinput == null || props.displayinput,
             displayPrevious: props.displayprevious,
-            fgColor: props.options.fgColor || '#87CEEB',
             inputColor: props.inputcolor,
             font: props.font || 'Arial',
             fontWeight: props['font-weight'] || 'bold',
@@ -70,7 +80,6 @@ export default class Knob extends React.Component {
         this.canvasContext = null; // rendered canvas context
         this.touchIndex = 0; // touches index
         this.isInit = false;
-        this.fgColor = props.fgColor || null; // main color
         this.pColor = null; // previous color
         this.drawHook = null; // draw hook
         this.changeHook = null; // change hook
@@ -107,8 +116,8 @@ console.log('componentDidMount', this.options);
             this.changeValue = this.value;
         }
 
-        this._configure();
-		this._xy();
+        // this._configure();
+		// this._xy();
 		this.init();
 		this._draw();
 		// this.paint();
@@ -122,36 +131,6 @@ console.log('componentDidMount', this.options);
 		// context.clearRect(0, 0, 200, 200);
 
 	}
-
-    buildElem() {
-        this.$canvas = this.createCanvas();
-        this.$div = this.createDiv();
-        this.$.wrap(this.$div).before(this.$canvas);
-        this.$div = this.$.parent();
-    }
-
-	render() {
-		return (
-			<canvas ref="canvas" width="200" height="200px"></canvas>
-		);
-	}
-
-    createCanvas() {
-        // adds needed DOM elements (canvas, div)
-        return $(document.createElement('canvas')).attr({
-            width: this.options.width,
-            height: this.options.height
-        });
-    }
-
-    createDiv() {
-        // wraps all elements in a div
-        // add to DOM before Canvas init is triggered
-        return $('<div style="'
-            + (this.options.inline ? 'display:inline;' : '')
-            + 'width:' + this.options.width + 'px;height:' + this.options.height + 'px;'
-            + '"></div>');
-    }
 
     setCanvasContext() {
         var canvasContext = React.findDOMNode(this).getContext('2d');
@@ -193,14 +172,12 @@ console.log('componentDidMount', this.options);
         // finalize options
         this.options.flip = this.options.rotation === 'anticlockwise' || this.options.rotation === 'acw';
         if (!this.options.inputColor) {
-            this.options.inputColor = this.options.fgColor;
+            this.options.inputColor = this.props.options.fgColor;
         }
 
         this.routeValue();
 
         !this.options.displayInput && this.$.hide();
-
-        this.buildElem();
 
         if (typeof G_vmlCanvasManager !== 'undefined') {
             G_vmlCanvasManager.initElement(this.$canvas[0]);
@@ -252,10 +229,10 @@ console.log('componentDidMount', this.options);
         if (this.options.release) this.releaseHook = this.options.release;
 
         if (this.options.displayPrevious) {
-            this.pColor = this.h2rgba(this.options.fgColor, "0.4");
-            this.fgColor = this.h2rgba(this.options.fgColor, "0.6");
+            this.pColor = this.h2rgba(this.props.options.fgColor, "0.4");
+            this.fgColor = this.h2rgba(this.props.options.fgColor, "0.6");
         } else {
-            this.fgColor = this.options.fgColor;
+            this.fgColor = this.props.options.fgColor;
         }
 
         return this;
@@ -282,15 +259,15 @@ console.log(node);
         this.lineCap = this.options.lineCap;
         this.radius = this.xy - this.lineWidth / 2;
 
-        this.options.angleOffset
-        && (this.options.angleOffset = isNaN(this.options.angleOffset) ? 0 : this.options.angleOffset);
+        this.props.options.angleOffset
+        && (this.props.options.angleOffset = isNaN(this.props.options.angleOffset) ? 0 : this.props.options.angleOffset);
 
-        this.options.angleArc
-        && (this.options.angleArc = isNaN(this.options.angleArc) ? this.PI2 : this.options.angleArc);
+        this.props.options.angleArc
+        && (this.props.options.angleArc = isNaN(this.props.options.angleArc) ? this.PI2 : this.props.options.angleArc);
 
         // deg to rad
-        this.angleOffset = this.options.angleOffset * Math.PI / 180;
-        this.angleArc = this.options.angleArc * Math.PI / 180;
+        this.angleOffset = this.props.options.angleOffset * Math.PI / 180;
+        this.angleArc = this.props.options.angleArc * Math.PI / 180;
 
         // compute start and end angles
         this.startAngle = 1.5 * Math.PI + this.angleOffset;
@@ -301,25 +278,6 @@ console.log(node);
             String(Math.abs(this.options.min)).length,
             2
         ) + 2;
-
-        // this.options.displayInput && this.input.css({
-        //     'width' : ((this.width / 2 + 4) >> 0) + 'px',
-        //     'height' : ((this.width / 3) >> 0) + 'px',
-        //     'position' : 'absolute',
-        //     'vertical-align' : 'middle',
-        //     'margin-top' : ((this.width / 3) >> 0) + 'px',
-        //     'margin-left' : '-' + ((this.width * 3 / 4 + 2) >> 0) + 'px',
-        //     'border' : 0,
-        //     'background' : 'none',
-        //     'font' : this.options.fontWeight + ' ' + ((this.width / s) >> 0) + 'px ' + this.options.font,
-        //     'text-align' : 'center',
-        //     'color' : this.options.inputColor || this.options.fgColor,
-        //     'padding' : '0px',
-        //     '-webkit-appearance': 'none'
-        // }) || this.input.css({
-        //     'width': '0px',
-        //     'visibility': 'hidden'
-        // });
     }
 
     _draw() {
@@ -328,8 +286,6 @@ console.log(node);
         var draw = true;
 
         this.graphics = this.canvasContext;
-
-// this.clear();
 
         this.drawHook && (draw = this.drawHook());
 
@@ -370,7 +326,7 @@ console.log(
     '\nthis.arc(this.changeValue)', this.arc(this.changeValue),
     '\nthis.graphics.lineWidth', this.graphics.lineWidth,
     '\nthis.graphics.lineCap', this.graphics.lineCap,
-    '\nthis.options.bgColor', this.options.bgColor,
+    '\nthis.props.options.bgColor', this.props.options.bgColor,
     '\nthis.xy', this.xy,
     '\nthis.radius', this.radius,
     '\nthis.endAngle', this.endAngle,
@@ -390,9 +346,9 @@ this.lineWidth = this.xy * this.options.thickness;
         graphics.lineWidth = this.lineWidth;
         graphics.lineCap = this.lineCap;
 
-        if (this.options.bgColor !== "none") {
+        if (this.props.options.bgColor !== "none") {
             graphics.beginPath();
-            graphics.strokeStyle = this.options.bgColor;
+            graphics.strokeStyle = this.props.options.bgColor;
             graphics.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
             graphics.stroke();
         }
@@ -407,35 +363,84 @@ this.lineWidth = this.xy * this.options.thickness;
         }
 
         graphics.beginPath();
-        graphics.strokeStyle = r ? this.options.fgColor : this.fgColor;
+        graphics.strokeStyle = r ? this.props.options.fgColor : this.fgColor;
         graphics.arc(this.xy, this.xy, this.radius, arc.start, arc.end, arc.degree);
         graphics.stroke();
     }
 
+	render() {
+		return (
+			<canvas height={this.props.height} width={this.props.width}></canvas>
+		);
+	}
+}
 
+class KnobInput extends React.Component {
 
+	constructor( props ) {
+		super();
 
+        var s = privates.max(
+            String(Math.abs(props.options.max)).length,
+            String(Math.abs(props.options.min)).length,
+            2
+        ) + 2;
 
-
-
-
-
-
-
-
-	paint() {
-		var context = this.canvasContext;
-		context.save();
-		context.translate(100, 100);
-		context.rotate(this.props.rotation, 100, 100);
-		context.fillStyle = '#F00';
-		context.fillRect(-50, -50, 100, 100);
-		context.restore();
+		props.styles = props.options.displayInput ? {
+            'width' : ((props.width / 2 + 4) >> 0) + 'px',
+            'height' : ((props.width / 3) >> 0) + 'px',
+            'position' : 'absolute',
+            'verticalAlign' : 'middle',
+            'marginTop' : ((props.width / 3) >> 0) + 'px',
+            'marginLeft' : '-' + ((props.width * 3 / 4 + 2) >> 0) + 'px',
+            'border' : 0,
+            'background' : 'none',
+            'font' : props.options.fontWeight + ' ' + ((this.width / s) >> 0) + 'px ' + props.options.font,
+            'textAlign' : 'center',
+            'color' : props.options.inputColor || props.options.fgColor,
+            'padding' : '0px',
+            '-webkit-appearance': 'none'
+		} : {
+            'width': '0px',
+            'visibility': 'hidden'
+		}
 	}
 
 	render() {
 		return (
-			<canvas className="georgio" height="150" width="150"></canvas>
+			<input type="text" value={this.props.value} style={this.props.styles} />
+		);
+	}	
+}
+
+export default class Knob extends React.Component {
+
+	constructor( props ) {
+		super();
+
+		// personalized options
+		props.height = 150;
+		props.width = 150;
+		props.options.fgColor = "#999";
+		props.options.displayInput = true;
+		props.options.inputColor = '#666';
+		props.options.angleOffset = -125;
+		props.options.angleArc = 250;
+
+		// guardrails/default options
+        props.options.bgColor = props.options.bgColor || '#EEEEEE';
+        props.options.fgColor = props.options.fgColor || '#87CEEB';
+        props.options.angleOffset = props.options.angleOffset || 0;
+        props.options.angleArc = props.options.angleArc || 360;
+        props.options.inline = true;
+	}
+
+	render() {
+		return (
+			<KnobWrapper {...this.props}>
+				<KnobCanvas {...this.props} />
+				<KnobInput {...this.props} />
+			</KnobWrapper>
 		);
 	}
 }
