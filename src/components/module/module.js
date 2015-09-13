@@ -10,16 +10,20 @@ var UiComponents = {
 };
 
 export default class Module extends React.Component {
+
+
 	render() {
+		var keyId = 0;
 		return (
 			<div className="module">
 				<label>{this.props.name}</label>
 				{
 					this.props.ui.map(function(component) {
 						var Component = UiComponents[component.type];
-
+						var key = 'module_' + keyId++;
+						
 						return (
-							<div>
+							<div key={key}>
 								<Title name={component.name} />
 								<Component options={component.options} value={component.value} />
 							</div>

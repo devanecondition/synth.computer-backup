@@ -738,23 +738,23 @@
     };
 
     thisDial.draw = function () {
-if (this.value === 35 && this.options.angleArc == 250) {
-console.log(
-    'this.graphics', this.graphics,
-    '\nthis.changeValue', this.changeValue,
-    '\nthis.arc(this.changeValue)', this.arc(this.changeValue),
-    '\nthis.graphics.lineWidth', this.graphics.lineWidth,
-    '\nthis.graphics.lineCap', this.graphics.lineCap,
-    '\nthis.options.bgColor', this.options.bgColor,
-    '\nthis.xy', this.xy,
-    '\nthis.radius', this.radius,
-    '\nthis.endAngle', this.endAngle,
-    '\nthis.startAngle', this.startAngle,
-    '\nthis.options.displayPrevious', this.options.displayPrevious,
-    '\nthis.pColor', this.pColor,
-    '\nthis.options', this.options
-);
-}
+// if (this.value === 35 && this.options.angleArc == 250) {
+// console.log(
+//     'this.graphics', this.graphics,
+//     '\nthis.changeValue', this.changeValue,
+//     '\nthis.arc(this.changeValue)', this.arc(this.changeValue),
+//     '\nthis.graphics.lineWidth', this.graphics.lineWidth,
+//     '\nthis.graphics.lineCap', this.graphics.lineCap,
+//     '\nthis.options.bgColor', this.options.bgColor,
+//     '\nthis.xy', this.xy,
+//     '\nthis.radius', this.radius,
+//     '\nthis.endAngle', this.endAngle,
+//     '\nthis.startAngle', this.startAngle,
+//     '\nthis.options.displayPrevious', this.options.displayPrevious,
+//     '\nthis.pColor', this.pColor,
+//     '\nthis.options', this.options
+// );
+// }
         var graphics = this.graphics,                 // context
             arc = this.arc(this.changeValue),      // Arc
             previousArc,                         // Previous arc

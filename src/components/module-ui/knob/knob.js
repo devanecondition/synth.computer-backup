@@ -6,17 +6,23 @@ export default class Knob extends React.Component {
 	constructor( props ) {
 		super();
 
+		this.height = props.height || 150;
+		this.width = props.width || 150;
+		this.value = props.value || 0;
+		this.options = props.options || {};
+
 		// personalized options
-		props.options.fgColor = "#999";
-		props.options.displayInput = true;
-		props.options.inputColor = '#666';
-		props.options.angleOffset = -125;
-		props.options.angleArc = 250;
+		this.options.fgColor = "#999";
+		this.options.displayInput = true;
+		this.options.inputColor = '#666';
+		this.options.angleOffset = -125;
+		this.options.angleArc = 250;
+		this.options.inline = true;
 	}
 
 	render() {
 		return (
-			<ReactJSKnob height="150" width="150" {...this.props} />
+			<ReactJSKnob height={this.width} width={this.height} value={this.value} options={this.options} />
 		);
 	}
 }

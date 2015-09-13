@@ -152,13 +152,15 @@ export default class Voice extends React.Component {
 	}
 
 	render() {
+		var keyId = 0;
 		return (
 			<div>
 				<Header />
 				<div className="patch-container">
 					{
 						this.state.modules.map(function(module) {
-							return <Module name={module.name} ui={module.ui} />
+							var key = 'voice_' + keyId++;
+							return <Module key={key} name={module.name} ui={module.ui} />
 						})
 					}
 				</div>
