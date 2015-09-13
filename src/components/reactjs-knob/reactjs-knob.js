@@ -34,12 +34,17 @@ class KnobCanvas extends React.Component {
 	constructor( props ) {
 		super();
 
+        this.state = {
+            value: props.value
+        };
+
         this.options = props.options || {};
 
         // UI
+        this.component = props.component;
         this.input = null; // mixed HTMLInputElement or array of HTMLInputElement
         this.graphics = null; // deprecated 2D graphics context for 'pre-rendering'
-        this.value = props.value || 0; // value ; mixed array or integer
+        this.value = this.state.value || 0; // value ; mixed array or integer
         this.changeValue = null; // change value ; not commited value
         this.x = 0; // canvas x position
         this.y = 0; // canvas y position
@@ -63,15 +68,14 @@ class KnobCanvas extends React.Component {
         this.PI2 = 2*Math.PI;
 	}
 
-	componentDidMount(component) {
-
+    _makeComponent() {
         // not sure what this does...
         // if (typeof G_vmlCanvasManager !== 'undefined') {
         //     G_vmlCanvasManager.initElement(this.$canvas[0]);
         // }
 
-		this.canvasContext = this.setCanvasContext();
-		this.scale = this.setScale();
+        this.canvasContext = this.setCanvasContext();
+        this.scale = this.setScale();
 
         // prepares props for transaction
         if (this.value instanceof Object) {
@@ -86,11 +90,16 @@ class KnobCanvas extends React.Component {
             ._xy()
             .init()
             ._draw();
+    }
+
+	componentDidMount(component) {
+        this._makeComponent();
 	}
 
 	componentDidUpdate() {
-		this.canvasContext = this.setCanvasContext();
-		this.scale = this.setScale();
+console.log('componentDidUpdate', this.component.state.value);
+        this.value = this.component.state.value;
+        this._makeComponent();
 	}
 
     setCanvasContext() {
@@ -262,9 +271,74 @@ class KnobCanvas extends React.Component {
         graphics.stroke();
     }
 
+    xy2val(x, y) {
+        var angle, ret;
+
+        angle = Math.atan2(
+                    x - (this.x + this.w2),
+                    - (y - this.y - this.w2)
+                ) - this.angleOffset;
+
+        if (this.options.flip) {
+            angle = this.angleArc - angle - this.PI2;
+        }
+
+        if (this.angleArc != this.PI2 && (angle < 0) && (angle > -0.5)) {
+
+            // if isset angleArc option, set to min if .5 under min
+            angle = 0;
+        } else if (angle < 0) {
+            angle += this.PI2;
+        }
+
+        ret = ~~ (0.5 + (angle * (this.options.max - this.options.min) / this.angleArc)) + this.options.min;
+console.log(
+    'this.w2',this.w2,
+    '\nx',x,
+    '\ny',y,
+    '\nangle', angle,
+    '\nthis.options.max',this.options.max, 
+    '\nthis.options.min',this.options.min,
+    '\nthis.angleArc',this.angleArc,
+    '\nret',ret,
+    '\nret = (angle * (this.options.max - this.options.min) / this.angleArc) + this.options.min'
+);
+        this.options.stopper && (ret = privates.max(privates.min(ret, this.options.max), this.options.min));
+
+        return ret;
+    }
+
+    _validate(value) {
+        var val = (~~ (((value < 0) ? -0.5 : 0.5) + (value/this.options.step))) * this.options.step;
+        return Math.round(val * 100) / 100;
+    }
+
+    _mouse(event) {
+
+        var _this = this;
+
+        var mouseMove = function (event, _this) {
+
+            var value = _this.xy2val(event.pageX, event.pageY);
+
+            if (value == _this.changeValue) return;
+
+            if (_this.changeHook && (_this.changeHook(value) === false)) return;
+
+            _this.component.setState({
+                value: value
+            });
+            // _this.change(_this._validate(value));
+            // _this._draw();
+        };
+
+        // First click
+        mouseMove(event, _this);
+    }
+
 	render() {
 		return (
-			<canvas height={this.props.height} width={this.props.width}></canvas>
+			<canvas height={this.props.height} width={this.props.width} onMouseDown={this._mouse.bind(this)}></canvas>
 		);
 	}
 }
@@ -314,6 +388,10 @@ export default class ReactJSKnob extends React.Component {
 	constructor( props ) {
 		super();
 
+        this.state = {
+            value: props.value
+        }
+
         this.width = props.width || 200;
         this.height = props.height || 200;
         this.options = props.options || {};
@@ -358,8 +436,8 @@ export default class ReactJSKnob extends React.Component {
 	render() {
 		return (
 			<KnobWrapper height={this.height} width={this.width} inline={this.options.inline}>
-				<KnobCanvas height={this.height} width={this.width} value={this.props.value} options={this.options} />
-				<KnobInput height={this.height} width={this.width} value={this.props.value} options={this.options} />
+				<KnobCanvas height={this.height} width={this.width} component={this} value={this.state.value} options={this.options} />
+				<KnobInput height={this.height} width={this.width} value={this.state.value} options={this.options} />
 			</KnobWrapper>
 		);
 	}

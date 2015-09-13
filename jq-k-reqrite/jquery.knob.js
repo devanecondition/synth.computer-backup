@@ -535,7 +535,17 @@
         }
 
         ret = (angle * (this.options.max - this.options.min) / this.angleArc) + this.options.min;
-
+console.log(
+    'this.w2',this.w2,
+    'x',x,
+    '\ny',y,
+    '\nangle', angle,
+    '\nthis.options.max',this.options.max, 
+    '\nthis.options.min',this.options.min,
+    '\nthis.angleArc',this.angleArc,
+    '\nret',ret,
+    '\nret = (angle * (this.options.max - this.options.min) / this.angleArc) + this.options.min'
+);
         this.options.stopper && (ret = privates.max(privates.min(ret, this.options.max), this.options.min));
 
         return ret;
