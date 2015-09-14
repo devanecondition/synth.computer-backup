@@ -408,6 +408,7 @@ export default class ReactJSKnob extends React.Component {
         this.width = props.width || 200;
         this.height = props.height || 200;
         this.options = props.options || {};
+
         this.options.min = this.options.min !== undefined ? this.options.min : 0;
         this.options.max = this.options.max !== undefined ? this.options.max : 100;
         this.options.bgColor = this.options.bgColor || '#EEEEEE';
@@ -433,7 +434,7 @@ export default class ReactJSKnob extends React.Component {
 
         // Hooks
         this.options.draw = null, // function () {}
-        this.options.change = null, // function (value) {}
+        this.options.change = this.options.change || null, // function (value) {}
         this.options.cancel = null, // function () {}
         this.options.release = null, // function (value) {}
 
@@ -445,6 +446,12 @@ export default class ReactJSKnob extends React.Component {
             return parseFloat(v);
         }
 	}
+
+    componentDidUpdate() {
+        if (typeof this.options.change === 'function') {
+            this.options.change(this.state.value);
+        }
+    }
 
 	render() {
 		return (

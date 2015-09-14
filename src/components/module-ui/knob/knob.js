@@ -18,6 +18,10 @@ export default class Knob extends React.Component {
 		this.options.angleOffset = -125;
 		this.options.angleArc = 250;
 		this.options.inline = true;
+
+		this.options.change = function(value) {
+			console.log('we called change, and it\'s value is', value);
+		};
 	}
 
 	render() {
