@@ -325,6 +325,8 @@ class KnobCanvas extends React.Component {
 
     mouseMove(event) {
 
+        event.preventDefault();
+
         var value = this.xy2val(event.pageX, event.pageY);
 
         if (value == this.changeValue) return;
@@ -337,8 +339,10 @@ class KnobCanvas extends React.Component {
     }
 
     _mouseDown(event) {
+        event.preventDefault();
         this._mouseMove.call(this,event);
         document.addEventListener('mousemove', this._mouseMove);
+        document.addEventListener('mouseup', this._mouseUp.bind(this));
     }
 
     _mouseUp(event) {
@@ -347,7 +351,7 @@ class KnobCanvas extends React.Component {
 
 	render() {
 		return (
-			<canvas height={this.props.height} width={this.props.width} onMouseDown={this._mouseDown.bind(this)} onMouseUp={this._mouseUp.bind(this)}></canvas>
+			<canvas height={this.props.height} width={this.props.width} onMouseDown={this._mouseDown.bind(this)}></canvas>
 		);
 	}
 }
