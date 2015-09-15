@@ -43,6 +43,22 @@ export default class Voice extends React.Component {
 								on:'stop'
 							},
 							value: 'off'
+						},
+						{
+							name:'Direction',
+							type: 'buttonsRadio',
+							options: {
+								backward:{
+									icon: 'backward'
+								},
+								random:{
+									icon: 'random'
+								},
+								forward:{
+									icon: 'forward'
+								}
+							},
+							value: 'forward'
 						}
 					]
 				},
@@ -57,6 +73,25 @@ export default class Voice extends React.Component {
 								max: 20
 							},
 							value: 0
+						},
+						{
+							name:'Wave Type',
+							type: 'buttonsRadio',
+							options: {
+								sine:{
+									icon: 'sine'
+								},
+								square:{
+									icon: 'square'
+								},
+								sawtooth:{
+									icon: 'sawtooth'
+								},
+								triangle:{
+									icon: 'triangle'
+								}
+							},
+							value: 'square'
 						}
 					]
 				},
