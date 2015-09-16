@@ -59,6 +59,20 @@ export default class Voice extends React.Component {
 								}
 							},
 							value: 'forward'
+						},
+						{
+							name:'Sequence',
+							type: 'buttonsGroup',
+							children: [
+								{
+									type: 'text',
+									text: 'Skip Note'
+								},
+								{
+									type: 'text',
+									text: 'Undo'
+								}
+							]
 						}
 					]
 				},
@@ -92,6 +106,20 @@ export default class Voice extends React.Component {
 								}
 							},
 							value: 'square'
+						},
+						{
+							name:'Octave',
+							type: 'buttonsGroup',
+							children: [
+								{
+									type: 'icon',
+									icon: 'down'
+								},
+								{
+									type: 'icon',
+									icon: 'up'
+								}
+							]
 						}
 					]
 				},
