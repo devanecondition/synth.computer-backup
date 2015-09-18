@@ -1,7 +1,7 @@
 import React from 'react';
 import "./header.less";
 
-class Header extends React.Component {
+export default class Header extends React.Component {
 
 	constructor(props) {
 		super();
@@ -25,5 +25,3 @@ class Header extends React.Component {
 		);
 	}
 }
-
-export default Header;

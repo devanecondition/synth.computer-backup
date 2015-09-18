@@ -1,6 +1,8 @@
+import _ from 'lodash';
 import React from 'react';
 import Header from '../header/header';
-import Module from '../module/module'
+import Module from '../module/module';
+import Cable from '../cable/cable';
 import './voice.less';
 
 export default class Voice extends React.Component {
@@ -12,6 +14,7 @@ export default class Voice extends React.Component {
 			modules : [
 				{
 					name: 'Clock',
+					id: 10,
 					ui: [
 						{
 							name:'Play/Stop',
@@ -41,6 +44,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'Sequencer',
+					id: 11,
 					ui: [
 						{
 							name:'Record',
@@ -103,6 +107,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'VCO',
+					id: 12,
 					ui: [
 						{
 							name:'Fine Tune',
@@ -160,6 +165,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'VCA',
+					id: 13,
 					ui: [
 						{
 							name:'Attenuator',
@@ -184,6 +190,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'Envelope Generator',
+					id: 14,
 					ui: [
 						{
 							name:'Attack',
@@ -217,6 +224,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'Filter',
+					id: 15,
 					ui: [
 						{
 							name:'Frequency',
@@ -250,6 +258,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'Delay',
+					id: 16,
 					ui: [
 						{
 							name:'Time',
@@ -283,6 +292,7 @@ export default class Voice extends React.Component {
 				},
 				{
 					name: 'Output',
+					id: 17,
 					ui: [],
 					jacks: [
 						{
@@ -295,15 +305,24 @@ export default class Voice extends React.Component {
 		};
 	}
 
+	deleteModule(module) {
+		var moduleIndex = _.findIndex(this.state.modules, 'id', module.props.id);
+		this.state.modules.splice(moduleIndex,1);
+		this.setState({
+			modules: this.state.modules
+		});
+	}
+
 	render() {
 		var _this = this;
+		// <Cable />
 		return (
 			<div>
 				<Header voice={_this} />
 				<div className="patch-container">
 					{
 						this.state.modules.map(function(module, keyId) {
-							return <Module voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
+							return <Module id={module.id} voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
 						})
 					}
 				</div>

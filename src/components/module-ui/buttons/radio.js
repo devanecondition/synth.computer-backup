@@ -40,12 +40,12 @@ export default class ButtonsRadio extends React.Component {
 		return (
 			<div>
 				{
-					options.map(function(option) {
+					options.map(function(option, keyId) {
 
 						var classes = (state.value === option) ? option + ' active' : option;
 
 						return (
-							<RadioLink radio={radio} option={option} classes={classes}  />
+							<RadioLink key={"button_" + keyId} radio={radio} option={option} classes={classes}  />
 						)
 					})
 				}
