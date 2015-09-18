@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import Header from '../header/header';
 import Module from '../module/module';
