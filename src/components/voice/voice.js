@@ -8,6 +8,7 @@ export default class Voice extends React.Component {
 	constructor() {
 		super();
 		this.state = {
+			mode: 'performance',
 			modules : [
 				{
 					name: 'Clock',
@@ -29,6 +30,12 @@ export default class Voice extends React.Component {
 								max: 350
 							},
 							value: 240
+						}
+					],
+					jacks: [
+						{
+							name: 'Gate out',
+							type: 'outlet'
 						}
 					]
 				},
@@ -73,6 +80,24 @@ export default class Voice extends React.Component {
 									text: 'Undo'
 								}
 							]
+						}
+					],
+					jacks: [
+						{
+							name: 'Pitch In',
+							type: 'inlet'
+						},
+						{
+							name: 'Gate in',
+							type: 'inlet'
+						},
+						{
+							name: 'Pitch out',
+							type: 'outlet'
+						},
+						{
+							name: 'Gate out',
+							type: 'outlet'
 						}
 					]
 				},
@@ -121,6 +146,16 @@ export default class Voice extends React.Component {
 								}
 							]
 						}
+					],
+					jacks: [
+						{
+							name: 'Pitch In',
+							type: 'inlet'
+						},
+						{
+							name: 'Audio out',
+							type: 'outlet'
+						}
 					]
 				},
 				{
@@ -134,6 +169,16 @@ export default class Voice extends React.Component {
 								max: 100
 							},
 							value: 50
+						}
+					],
+					jacks: [
+						{
+							name: 'Audio/Env',
+							type: 'inlet'
+						},
+						{
+							name: 'Audio out',
+							type: 'outlet'
 						}
 					]
 				},
@@ -158,6 +203,16 @@ export default class Voice extends React.Component {
 							},
 							value: 23
 						}
+					],
+					jacks: [
+						{
+							name: 'Gate In',
+							type: 'inlet'
+						},
+						{
+							name: 'Env out',
+							type: 'outlet'
+						}
 					]
 				},
 				{
@@ -180,6 +235,16 @@ export default class Voice extends React.Component {
 								max: 100
 							},
 							value: 62
+						}
+					],
+					jacks: [
+						{
+							name: 'Audio In',
+							type: 'inlet'
+						},
+						{
+							name: 'Audio out',
+							type: 'outlet'
 						}
 					]
 				},
@@ -204,24 +269,41 @@ export default class Voice extends React.Component {
 							},
 							value: 40
 						}
+					],
+					jacks: [
+						{
+							name: 'Audio In',
+							type: 'inlet'
+						},
+						{
+							name: 'Audio out',
+							type: 'outlet'
+						}
 					]
 				},
 				{
 					name: 'Output',
-					ui: []
+					ui: [],
+					jacks: [
+						{
+							name: 'Audio In',
+							type: 'inlet'
+						}
+					]
 				}
 			]
 		};
 	}
 
 	render() {
+		var _this = this;
 		return (
 			<div>
-				<Header />
+				<Header voice={_this} />
 				<div className="patch-container">
 					{
 						this.state.modules.map(function(module, keyId) {
-							return <Module key={'voice_' + keyId++} name={module.name} ui={module.ui} />
+							return <Module voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
 						})
 					}
 				</div>
