@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import Header from '../header/header';
 import Module from '../module/module';
@@ -9,6 +8,17 @@ export default class Voice extends React.Component {
 
 	constructor() {
 		super();
+
+		this._mouseMove = this.mouseMove.bind(this);
+		this._mouseUp = this.mouseUp.bind(this);
+	    this._newCable = {
+	    	cable: null,
+	    	outlet: null,
+	    	inlet: null
+		};		
+	    this._cableHoveredOverInlet = false
+
+
 		this.state = {
 			mode: 'performance',
 			modules : [
@@ -301,7 +311,8 @@ export default class Voice extends React.Component {
 						}
 					]
 				}
-			]
+			],
+			connections: []
 		};
 	}
 
@@ -313,9 +324,65 @@ export default class Voice extends React.Component {
 		});
 	}
 
+    _getElemPosition(module) {
+
+        var el = React.findDOMNode(module);
+        var el2 = el;
+        var x = 0;
+        var y = 0;
+
+        if (document.getElementById || document.all) {
+            do  {
+                x += el.offsetLeft-el.scrollLeft;
+                y += el.offsetTop-el.scrollTop;
+                el = el.offsetParent;
+                el2 = el2.parentNode;
+                while (el2 != el) {
+                    x -= el2.scrollLeft;
+                    y -= el2.scrollTop;
+                    el2 = el2.parentNode;
+                }
+            } while (el.offsetParent);
+
+        } else if (document.layers) {
+            y += el.y;
+            x += el.x;
+        }
+
+        return { x:x, y:y };
+    }
+
+    mouseMove(event) {
+        event.preventDefault();
+
+console.log('mousemove', event.pageX, event.pageY);
+        // this.component.setState({
+        //     value: value
+        // });
+    }
+
+	onJackHoverOn() {
+		_cableHoveredOverInlet = true
+	}
+
+	onJackHoverOff() {
+		_cableHoveredOverInlet = false
+	}
+
+	onNewCableEnabled(module) {
+		// var jackPosition = this._getElemPosition(module);
+		
+		document.addEventListener('mousemove', this._mouseMove);
+        document.addEventListener('mouseup', this._mouseUp.bind(this));
+    }
+
+    mouseUp(event) {
+        document.removeEventListener('mousemove', this._mouseMove);
+        document.removeEventListener('mouseup', this._mouseMove);
+    }
+
 	render() {
 		var _this = this;
-		// <Cable />
 		return (
 			<div>
 				<Header voice={_this} />
@@ -325,7 +392,13 @@ export default class Voice extends React.Component {
 							return <Module id={module.id} voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
 						})
 					}
+					{
+						this.state.connections.map(function(connection, keyId) {
+							<Cable />
+						})
+					}
 				</div>
+				<Cable />
 			</div>
 		);
 	}

@@ -9,9 +9,8 @@ export default class Toggle extends React.Component {
 	}
 
 	toggleState() {
-		var newState = (this.state.value === 'on') ? 'off' : 'on';
 		this.setState({
-			value: newState
+			value: (this.state.value === 'on') ? 'off' : 'on'
 		});
 	}
 
