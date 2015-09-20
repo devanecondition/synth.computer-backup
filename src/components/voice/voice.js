@@ -15,6 +15,7 @@ export default class Voice extends React.Component {
 		super();
 
 		this._mouseUp = this.mouseUp.bind(this);
+		this.activeCable;
 	    this._newCable = {
 	    	cable: null,
 	    	outlet: null,
@@ -352,7 +353,10 @@ export default class Voice extends React.Component {
             x += el.x;
         }
 
-        return { x:x, y:y };
+        return {
+        	left:x,
+        	top:y
+        };
     }
 
 	onJackHoverOn(jack, module) {
@@ -366,7 +370,7 @@ console.log(jack.props.id, module.props.id);
 
 	onNewCableEnabled(jack, module, event) {
 		// var jackPosition = this._getElemPosition(module);
-console.log(jack, module.props.id);
+console.log(this._getElemPosition(jack), event.pageX, event.pageY);
 
         document.addEventListener('mouseup', this._mouseUp.bind(this));
         this.setState({
@@ -382,8 +386,13 @@ console.log(jack, module.props.id);
     }
 
     mouseUp(event) {
-        document.removeEventListener('mousemove', this._mouseMove);
-        document.removeEventListener('mouseup', this._mouseMove);
+console.log(this._cableHoveredOverInlet);
+        if (!this._cableHoveredOverInlet) {    	
+	        // this.state.connections.pop();
+	        // this.setState({
+	        // 	connections: this.state.connections
+	        // });
+        }
     }
 
 	render() {
@@ -400,7 +409,7 @@ console.log(jack, module.props.id);
 					{
 						this.state.connections.map(function(connection, keyId) {
 							var Connection = Connections[connection.type];
-							return <Connection position={connection.position} enabled={connection.enabled} />
+							return <Connection voice={_this} position={connection.position} enabled={connection.enabled} />
 						})
 					}
 				</div>

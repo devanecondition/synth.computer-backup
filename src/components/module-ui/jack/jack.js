@@ -16,12 +16,14 @@ class Jack extends React.Component {
 	}
 
 	onJackHoverOn() {
+console.log('onJackHoverOn');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOn(this, this.module);
 		}
 	}
 
 	onJackHoverOff() {
+console.log('onJackHoverOff');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOff(this);
 		}

@@ -18,6 +18,8 @@ export default class Cable extends React.Component {
         var top = parseInt(props.position.top),
             left = parseInt(props.position.left);
 
+        this.voice = props.voice;
+
         this.position = {
             left: left,
             top: top
@@ -26,45 +28,52 @@ export default class Cable extends React.Component {
         this.state = {
             height: 0,
             width:0,
-            left: left,
-            top: top,
-            x1: 0,
-            y1: 0,
-            x2: 0,
-            y2: 0
+            left: left - 8,
+            top: top - 8,
+            x1: 8,
+            y1: 8,
+            x2: 8,
+            y2: 8,
+            enabled: true
         };
 
         this._mouseMove = this.mouseMove.bind(this);
-
-        if (props.enabled===true) {
+        if (this.state.enabled===true) {
             document.addEventListener('mousemove', this._mouseMove);
+            document.addEventListener('mouseup', this._mouseUp.bind(this));
         }
 	}
+
+    _mouseUp(event) {
+        document.removeEventListener('mousemove', this._mouseMove);
+    }
 
     mouseMove(event) {
         event.preventDefault();
 
-        var relativeMousePosTop = event.pageY - this.state.top,
-            relativeMousePosLeft = event.pageX - this.state.left,
+        var relativeMousePosTop = event.pageY - this.position.top,
+            relativeMousePosLeft = event.pageX - this.position.left,
             svgHeight = Math.abs(relativeMousePosTop),
             svgWidth = Math.abs(relativeMousePosLeft),
             newState = {
-                height: svgHeight,
-                width: svgWidth,
-                x2: relativeMousePosLeft,
-                y2: relativeMousePosTop
+                top: this.position.top - 8,
+                left: this.position.left - 8,
+                height: svgHeight + 16,
+                width: svgWidth + 16,
+                x2: relativeMousePosLeft + 8,
+                y2: relativeMousePosTop + 8
             };
 
-        if (relativeMousePosTop < 0) {
-            newState.top = this.position.top - svgHeight;
-            newState.y1 = svgHeight;
-            newState.y2 = 0
+        if (relativeMousePosTop <= 0) {
+            newState.top = this.position.top - svgHeight - 8;
+            newState.y1 = svgHeight + 8;
+            newState.y2 = 8;
         }
 
-        if (relativeMousePosLeft < 0) {
-            newState.left = this.position.left - svgWidth;
-            newState.x1 = svgWidth;
-            newState.x2 = 0
+        if (relativeMousePosLeft <= 0) {
+            newState.left = this.position.left - svgWidth - 8;
+            newState.x1 = svgWidth + 8;
+            newState.x2 = 8;
         }
 
         this.setState( newState );
