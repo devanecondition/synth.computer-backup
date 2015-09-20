@@ -6,17 +6,18 @@ class Jack extends React.Component {
 	constructor(props) {
 		super();
 		this.voice = props.voice;
+		this.module = props.module;
 	}
 
-	onJackClick() {
+	onJackClick(event) {
 		if (this.props.type === 'outlet') {
-			this.voice.onNewCableEnabled(this);
+			this.voice.onNewCableEnabled(this, this.module, event);
 		}
 	}
 
 	onJackHoverOn() {
 		if (this.props.type === 'inlet') {
-			this.voice.onJackHoverOn(this);
+			this.voice.onJackHoverOn(this, this.module);
 		}
 	}
 

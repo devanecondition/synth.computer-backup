@@ -5,23 +5,25 @@ import Module from '../module/module';
 import Cable from '../cable/cable';
 import './voice.less';
 
+var Connections = {
+	cable : Cable
+};
+
 export default class Voice extends React.Component {
 
 	constructor() {
 		super();
 
-		this._mouseMove = this.mouseMove.bind(this);
 		this._mouseUp = this.mouseUp.bind(this);
 	    this._newCable = {
 	    	cable: null,
 	    	outlet: null,
 	    	inlet: null
 		};		
-	    this._cableHoveredOverInlet = false
-
+	    this._cableHoveredOverInlet = false;
 
 		this.state = {
-			mode: 'performance',
+			mode: 'edit',
 			modules : [
 				{
 					name: 'Clock',
@@ -353,28 +355,30 @@ export default class Voice extends React.Component {
         return { x:x, y:y };
     }
 
-    mouseMove(event) {
-        event.preventDefault();
-
-console.log('mousemove', event.pageX, event.pageY);
-        // this.component.setState({
-        //     value: value
-        // });
-    }
-
-	onJackHoverOn() {
-		_cableHoveredOverInlet = true
+	onJackHoverOn(jack, module) {
+console.log(jack.props.id, module.props.id);
+		this._cableHoveredOverInlet = true
 	}
 
 	onJackHoverOff() {
-		_cableHoveredOverInlet = false
+		this._cableHoveredOverInlet = false
 	}
 
-	onNewCableEnabled(module) {
+	onNewCableEnabled(jack, module, event) {
 		// var jackPosition = this._getElemPosition(module);
-		
-		document.addEventListener('mousemove', this._mouseMove);
+console.log(jack, module.props.id);
+
         document.addEventListener('mouseup', this._mouseUp.bind(this));
+        this.setState({
+        	connections: this.state.connections.concat({
+        		type: 'cable',
+        		position:{
+        			top: event.pageY,
+        			left: event.pageX
+        		},
+        		enabled: true
+	        })
+        });
     }
 
     mouseUp(event) {
@@ -395,12 +399,12 @@ console.log('mousemove', event.pageX, event.pageY);
 					}
 					{
 						this.state.connections.map(function(connection, keyId) {
-							<Cable />
+							var Connection = Connections[connection.type];
+							return <Connection position={connection.position} enabled={connection.enabled} />
 						})
 					}
 				</div>
-				<Cable />
 			</div>
 		);
 	}
-}
+}	

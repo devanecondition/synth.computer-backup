@@ -1,24 +1,80 @@
 import React from 'react';
+import './cable.less';
 
 class SVGComponent extends React.Component {
     render() {
+console.log(this.props);
         return (
-            <svg>{this.props.children}</svg>
+            <svg style={this.props.position} height={this.props.height} width={this.props.width}>{this.props.children}</svg>
         );
     }
 };
 
 export default class Cable extends React.Component {
 
-	constructor(props) {
-		super();
+    constructor(props) {
+        super();
+
+        var top = parseInt(props.position.top),
+            left = parseInt(props.position.left);
+
+        this.position = {
+            left: left,
+            top: top
+        };
+
+        this.state = {
+            height: 0,
+            width:0,
+            left: left,
+            top: top,
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0
+        };
+
+        this._mouseMove = this.mouseMove.bind(this);
+
+        if (props.enabled===true) {
+            document.addEventListener('mousemove', this._mouseMove);
+        }
 	}
+
+    mouseMove(event) {
+        event.preventDefault();
+
+        var relativeMousePosTop = event.pageY - this.state.top,
+            relativeMousePosLeft = event.pageX - this.state.left,
+            svgHeight = Math.abs(relativeMousePosTop),
+            svgWidth = Math.abs(relativeMousePosLeft),
+            newState = {
+                height: svgHeight,
+                width: svgWidth,
+                x2: relativeMousePosLeft,
+                y2: relativeMousePosTop
+            };
+
+        if (relativeMousePosTop < 0) {
+            newState.top = this.position.top - svgHeight;
+            newState.y1 = svgHeight;
+            newState.y2 = 0
+        }
+
+        if (relativeMousePosLeft < 0) {
+            newState.left = this.position.left - svgWidth;
+            newState.x1 = svgWidth;
+            newState.x2 = 0
+        }
+
+        this.setState( newState );
+    }
 
 	render() {
         return (
-            <SVGComponent height="100" width="100">
-        		<line x1="25" y1="25" x2="75" y2="75" strokeWidth="5" stroke="orange" />
-            </SVGComponent>
+            <svg height={this.state.height} width={this.state.width} style={{top:this.state.top, left:this.state.left}}>
+        		<line x1={this.state.x1} y1={this.state.y1} x2={this.state.x2} y2={this.state.y2} strokeWidth="4" stroke="#444" />
+            </svg>
 		);
 	}
 }

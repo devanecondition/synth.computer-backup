@@ -46,7 +46,7 @@ export default class Module extends React.Component {
 				<DeleteButton voice={this.voice} module={this} />
 				{this.props.module.jacks.map(function(jack, key) {
 					return (
-						<Jack name={jack.name} type={jack.type} voice={_this.voice} key={"jack_" + key} />
+						<Jack name={jack.name} type={jack.type} voice={_this.voice} module={_this} key={"jack_" + key} />
 					);
 				})}
 			</div>
