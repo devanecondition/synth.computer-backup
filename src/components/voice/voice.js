@@ -386,12 +386,11 @@ console.log(this._getElemPosition(jack), event.pageX, event.pageY);
     }
 
     mouseUp(event) {
-console.log(this._cableHoveredOverInlet);
         if (!this._cableHoveredOverInlet) {    	
-	        // this.state.connections.pop();
-	        // this.setState({
-	        // 	connections: this.state.connections
-	        // });
+	        this.state.connections.pop();
+	        this.setState({
+	        	connections: this.state.connections
+	        });
         }
     }
 

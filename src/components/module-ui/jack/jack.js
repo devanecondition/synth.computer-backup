@@ -7,6 +7,9 @@ class Jack extends React.Component {
 		super();
 		this.voice = props.voice;
 		this.module = props.module;
+		this.state = {
+			mouseOver: ''
+		}
 	}
 
 	onJackClick(event) {
@@ -19,6 +22,9 @@ class Jack extends React.Component {
 console.log('onJackHoverOn');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOn(this, this.module);
+			this.setState({
+				mouseOver: ' mouseOver'
+			});
 		}
 	}
 
@@ -26,6 +32,9 @@ console.log('onJackHoverOn');
 console.log('onJackHoverOff');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOff(this);
+			this.setState({
+				mouseOver: ''
+			});
 		}
 	}
 
@@ -33,7 +42,7 @@ console.log('onJackHoverOff');
 		return (
 			<div className="jack-wrap">
 				<p>{this.props.name}</p>
-				<div className={"button jack " + this.props.type} onMouseDown={this.onJackClick.bind(this)} onMouseEnter={this.onJackHoverOn.bind(this)} onMouseLeave={this.onJackHoverOff.bind(this)}>
+				<div className={"button jack " + this.props.type + this.state.mouseOver} onMouseDown={this.onJackClick.bind(this)} onMouseEnter={this.onJackHoverOn.bind(this)} onMouseLeave={this.onJackHoverOff.bind(this)}>
 					<div></div>
 				</div>
 			</div>
