@@ -321,43 +321,12 @@ export default class Voice extends React.Component {
 	}
 
 	deleteModule(module) {
-		var moduleIndex = _.findIndex(this.state.modules, 'id', module.props.id);
+		let moduleIndex = _.findIndex(this.state.modules, 'id', module.props.id);
 		this.state.modules.splice(moduleIndex,1);
 		this.setState({
 			modules: this.state.modules
 		});
 	}
-
-    _getElemPosition(module) {
-
-        var el = React.findDOMNode(module);
-        var el2 = el;
-        var x = 0;
-        var y = 0;
-
-        if (document.getElementById || document.all) {
-            do  {
-                x += el.offsetLeft-el.scrollLeft;
-                y += el.offsetTop-el.scrollTop;
-                el = el.offsetParent;
-                el2 = el2.parentNode;
-                while (el2 != el) {
-                    x -= el2.scrollLeft;
-                    y -= el2.scrollTop;
-                    el2 = el2.parentNode;
-                }
-            } while (el.offsetParent);
-
-        } else if (document.layers) {
-            y += el.y;
-            x += el.x;
-        }
-
-        return {
-        	left:x,
-        	top:y
-        };
-    }
 
 	onJackHoverOn(jack, module) {
 console.log(jack.props.id, module.props.id);
@@ -368,18 +337,12 @@ console.log(jack.props.id, module.props.id);
 		this._cableHoveredOverInlet = false
 	}
 
-	onNewCableEnabled(jack, module, event) {
-		// var jackPosition = this._getElemPosition(module);
-console.log(this._getElemPosition(jack), event.pageX, event.pageY);
-
+	onNewCableEnabled(jack, position) {
         document.addEventListener('mouseup', this._mouseUp.bind(this));
         this.setState({
         	connections: this.state.connections.concat({
         		type: 'cable',
-        		position:{
-        			top: event.pageY,
-        			left: event.pageX
-        		},
+        		position:position,
         		enabled: true
 	        })
         });
@@ -395,7 +358,7 @@ console.log(this._getElemPosition(jack), event.pageX, event.pageY);
     }
 
 	render() {
-		var _this = this;
+		let _this = this;
 		return (
 			<div>
 				<Header voice={_this} />

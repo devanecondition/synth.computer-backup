@@ -1,5 +1,6 @@
 import React from 'react';
 import './cable.less';
+import CableEnd from "./cable-end";
 
 class SVGComponent extends React.Component {
     render() {
@@ -81,9 +82,12 @@ export default class Cable extends React.Component {
 
 	render() {
         return (
-            <svg height={this.state.height} width={this.state.width} style={{top:this.state.top, left:this.state.left}}>
-        		<line x1={this.state.x1} y1={this.state.y1} x2={this.state.x2} y2={this.state.y2} strokeWidth="4" stroke="#444" />
-            </svg>
+            <div>
+                <CableEnd top={this.position.top} left={this.position.left} />
+                <svg height={this.state.height} width={this.state.width} style={{top:this.state.top, left:this.state.left}}>
+            		<line x1={this.state.x1} y1={this.state.y1} x2={this.state.x2} y2={this.state.y2} strokeWidth="4" stroke="#444" />
+                </svg>
+            </div>
 		);
 	}
 }

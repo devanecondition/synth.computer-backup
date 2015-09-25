@@ -1,7 +1,8 @@
 import React from 'react';
 import "./jack.less";
+import Tools from "../../../tools.js";
 
-class Jack extends React.Component {
+export default class Jack extends React.Component {
 
 	constructor(props) {
 		super();
@@ -13,8 +14,15 @@ class Jack extends React.Component {
 	}
 
 	onJackClick(event) {
+
+		let jackHole = React.findDOMNode(this.refs.jackHole);
+		let jackHolePos = Tools.getElemPosition(jackHole);
+
+		jackHolePos.top = jackHolePos.top + 13;
+		jackHolePos.left = jackHolePos.left + 13;
+
 		if (this.props.type === 'outlet') {
-			this.voice.onNewCableEnabled(this, this.module, event);
+			this.voice.onNewCableEnabled(this, jackHolePos);
 		}
 	}
 
@@ -43,11 +51,9 @@ console.log('onJackHoverOff');
 			<div className="jack-wrap">
 				<p>{this.props.name}</p>
 				<div className={"button jack " + this.props.type + this.state.mouseOver} onMouseDown={this.onJackClick.bind(this)} onMouseEnter={this.onJackHoverOn.bind(this)} onMouseLeave={this.onJackHoverOff.bind(this)}>
-					<div></div>
+					<div ref="jackHole"></div>
 				</div>
 			</div>
 		);
 	}
 }
-
-export default Jack;
