@@ -13,23 +13,26 @@ export default class Jack extends React.Component {
 		}
 	}
 
-	onJackClick(event) {
-
+	getPosition() {
 		let jackHole = React.findDOMNode(this.refs.jackHole);
 		let jackHolePos = Tools.getElemPosition(jackHole);
 
 		jackHolePos.top = jackHolePos.top + 13;
 		jackHolePos.left = jackHolePos.left + 13;
 
+		return jackHolePos;
+	}
+
+	onJackClick(event) {
 		if (this.props.type === 'outlet') {
-			this.voice.onNewCableEnabled(this, jackHolePos);
+			this.voice.onNewCableEnabled(this, this.getPosition());
 		}
 	}
 
 	onJackHoverOn() {
-console.log('onJackHoverOn');
+// console.log('onJackHoverOn');
 		if (this.props.type === 'inlet') {
-			this.voice.onJackHoverOn(this, this.module);
+			this.voice.onJackHoverOn(this, this.getPosition());
 			this.setState({
 				mouseOver: ' mouseOver'
 			});
@@ -37,7 +40,7 @@ console.log('onJackHoverOn');
 	}
 
 	onJackHoverOff() {
-console.log('onJackHoverOff');
+// console.log('onJackHoverOff');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOff(this);
 			this.setState({

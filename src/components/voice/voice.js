@@ -21,7 +21,7 @@ export default class Voice extends React.Component {
 	    	outlet: null,
 	    	inlet: null
 		};		
-	    this._cableHoveredOverInlet = false;
+	    this._activeInlet = false;
 
 		this.state = {
 			mode: 'edit',
@@ -328,13 +328,16 @@ export default class Voice extends React.Component {
 		});
 	}
 
-	onJackHoverOn(jack, module) {
-console.log(jack.props.id, module.props.id);
-		this._cableHoveredOverInlet = true
+	getActiveInlet() {
+		return this._activeInlet;
+	}
+
+	onJackHoverOn(jack, position) {
+		this._activeInlet = position
 	}
 
 	onJackHoverOff() {
-		this._cableHoveredOverInlet = false
+		this._activeInlet = false
 	}
 
 	onNewCableEnabled(jack, position) {
@@ -349,7 +352,7 @@ console.log(jack.props.id, module.props.id);
     }
 
     mouseUp(event) {
-        if (!this._cableHoveredOverInlet) {    	
+        if (!this._activeInlet) {    	
 	        this.state.connections.pop();
 	        this.setState({
 	        	connections: this.state.connections
