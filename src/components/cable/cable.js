@@ -40,14 +40,18 @@ export default class Cable extends React.Component {
 
     _mouseUp(event) {
 
-//         let activeInletPos = this.voice.getActiveInlet();
-// console.log(this.state.top, activeInletPos.top, this.state.left, activeInletPos.left);
-//         if (activeInletPos) {
-//             this.setState({
-//                 x2: activeInletPos.left,
-//                 y2: activeInletPos.top
-//             });
-//         }
+        let activeInletPos = this.voice.getActiveInlet();
+        let finalLeft = (activeInletPos.left - this.state.left) + 8;
+        let finalTop = (activeInletPos.top - this.state.top) + 8;
+
+        if (activeInletPos) {
+            this.setState({
+                cirle2X: finalLeft,
+                x2: finalLeft,
+                cirle2Y: finalTop,
+                y2: finalTop
+            });
+        }
 
         document.removeEventListener('mousemove', this._mouseMove);
     }
@@ -63,8 +67,8 @@ export default class Cable extends React.Component {
         let newState = {
             top: this.position.top,
             left: this.position.left,
-            height: svgHeight + 16,
-            width: svgWidth + 16,
+            height: svgHeight + 40,
+            width: svgWidth + 40,
             x1: 8,
             x2: relativeMousePosLeft,
             y1: 8,
@@ -76,29 +80,30 @@ export default class Cable extends React.Component {
         };
 
         if (relativeMousePosTop <= 8) {
-            newState.top = this.position.top - svgHeight - 8;
-            newState.height = svgHeight + 24;
-            newState.cirle2Y = svgHeight + relativeMousePosTop + 8;
-            newState.y1 = svgHeight + 16;
-            newState.y2 = svgHeight + relativeMousePosTop + 8;
+            // 40px is the height of a jack, so make sure svg is always tall/wide enough to position connection
+            newState.top = this.position.top - svgHeight - 40;
+            newState.height = svgHeight + 56;
+            newState.cirle2Y = svgHeight + relativeMousePosTop + 40;
+            newState.y1 = svgHeight + 48;
+            newState.y2 = svgHeight + relativeMousePosTop + 40;
         }
 
         if (relativeMousePosTop <= 0) {
-            newState.cirle2Y = 8;
-            newState.y2 = 8;
+            newState.cirle2Y = 40;
+            newState.y2 = 40;
         }
 
         if (relativeMousePosLeft <= 8) {
-            newState.left = this.position.left - svgWidth - 8;
-            newState.width = svgWidth + 24;
-            newState.cirle2X = svgWidth + relativeMousePosLeft + 8;
-            newState.x1 = svgWidth + 16;
-            newState.x2 = svgWidth + relativeMousePosLeft + 8;
+            newState.left = this.position.left - svgWidth - 40;
+            newState.width = svgWidth + 56;
+            newState.cirle2X = svgWidth + relativeMousePosLeft + 40;
+            newState.x1 = svgWidth + 48;
+            newState.x2 = svgWidth + relativeMousePosLeft + 40;
         }
 
         if (relativeMousePosLeft <= 0) {
-            newState.cirle2X = 8;
-            newState.x2 = 8;
+            newState.cirle2X = 40;
+            newState.x2 = 40;
         }
 
         this.setState( newState );
