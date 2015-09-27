@@ -112,6 +112,7 @@ export default class Cable extends React.Component {
         if (relativeMousePosLeft <= 0) {
             newState.cirle2X = 40;
             newState.x2 = 40;
+            newState.qX = Math.abs(newState.qX);
         }
 
         this.setState( newState );
