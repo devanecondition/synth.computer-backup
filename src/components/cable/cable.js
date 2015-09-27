@@ -6,36 +6,18 @@ export default class Cable extends React.Component {
     constructor(props) {
         super();
 
-        var top = parseInt(props.position.top),
-            left = parseInt(props.position.left);
-
         this.voice = props.voice;
-
-        this.position = props.position;
+        this.startPosition = props.startPosition || {};
+        this.endPosition = props.endPosition || {};
         this.cableLength = 0;
 
-        this.state = {
-            height: 0,
-            width:0,
-            left: left - 8,
-            top: top - 8,
-            x1: 8,
-            y1: 8,
-            x2: 8,
-            y2: 8,
-            qX: 0,
-            qY: 0,
-            enabled: true,
-            mouseX: 0,
-            mouseY: 0,
-            cirle2X: 0,
-            cirle2Y: 0,
-        };
+        this.state = this.getCableCoordinates();
+        this.state.enabled = (typeof props.enabled !== 'undefined') ? props.enabled : true
 
         this._mouseMove = this.mouseMove.bind(this);
         this._mouseUp = this.mouseUp.bind(this);
 
-        if (this.state.enabled===true) {
+        if (props.enabled===true) {
             document.addEventListener('mousemove', this._mouseMove);
             document.addEventListener('mouseup', this._mouseUp);
         }
@@ -43,11 +25,14 @@ export default class Cable extends React.Component {
 
     mouseUp(event) {
 
-        let activeInletPos = this.voice.getActiveInlet();
-        let finalLeft = (activeInletPos.left - this.state.left) + 8;
-        let finalTop = (activeInletPos.top - this.state.top) + 8;
+        let activeInlet = this.voice.getActiveInlet();
+        let activeInletPos = this.voice.getJackPosition(activeInlet);
 
         if (activeInletPos) {
+    
+            let finalLeft = (activeInletPos.left - this.state.left) + 8;
+            let finalTop = (activeInletPos.top - this.state.top) + 8;
+
             this.setState({
                 cirle2X: finalLeft,
                 x2: finalLeft,
@@ -60,67 +45,68 @@ export default class Cable extends React.Component {
         document.removeEventListener('mouseup', this._mouseUp);
     }
 
-    updatePosition() {
+    getCableCoordinates(event) {
 
-        let relativeMousePosTop = event.pageY - this.position.top;
-        let relativeMousePosLeft = event.pageX - this.position.left;
+        event = event || {};
+
+        let endPointTop = this.endPosition.top || event.pageY || this.startPosition.top + 8;
+        let endPointLeft = this.endPosition.left || event.pageX || this.startPosition.left + 8;
+        let relativeMousePosTop = endPointTop - this.startPosition.top;
+        let relativeMousePosLeft = endPointLeft - this.startPosition.left;
         let svgHeight = Math.abs(relativeMousePosTop);
         let svgWidth = Math.abs(relativeMousePosLeft);
         let halfLength = this.cableLength/3;
-        let newState = {
-            top: this.position.top,
-            left: this.position.left,
+        let coordinates = {
+            top: this.startPosition.top,
+            left: this.startPosition.left,
             height: svgHeight + 300,
             width: svgWidth + 40,
             x1: 8,
             x2: relativeMousePosLeft,
             y1: 8,
             y2: relativeMousePosTop,
-            qX: halfLength,
+            qX: relativeMousePosLeft - 8,
             qY: halfLength,
-            mouseX: event.pageX,
-            mouseY: event.pageY,
             cirle2X: relativeMousePosLeft,
             cirle2Y: relativeMousePosTop
         };
 
         if (relativeMousePosTop <= 8) {
             // 40px is the height of a jack, so make sure svg is always tall/wide enough to position connection
-            newState.top = this.position.top - svgHeight - 40;
-            newState.height = svgHeight + 356;
-            newState.cirle2Y = svgHeight + relativeMousePosTop + 40;
-            newState.y1 = svgHeight + 48;
-            newState.y2 = svgHeight + relativeMousePosTop + 40;
-            newState.qY = halfLength + svgHeight + 40;
+            coordinates.top = this.startPosition.top - svgHeight - 40;
+            coordinates.height = svgHeight + 356;
+            coordinates.cirle2Y = svgHeight + relativeMousePosTop + 40;
+            coordinates.y1 = svgHeight + 48;
+            coordinates.y2 = svgHeight + relativeMousePosTop + 40;
+            coordinates.qY = halfLength + svgHeight + 40;
         }
 
         if (relativeMousePosTop <= 0) {
-            newState.cirle2Y = 40;
-            newState.y2 = 40;
+            coordinates.cirle2Y = 40;
+            coordinates.y2 = 40;
         }
 
-        newState.qX = newState.x2 - newState.x1;
         if (relativeMousePosLeft <= 8) {
-            newState.left = this.position.left - svgWidth - 40;
-            newState.width = svgWidth + 56;
-            newState.cirle2X = svgWidth + relativeMousePosLeft + 40;
-            newState.x1 = svgWidth + 48;
-            newState.x2 = svgWidth + relativeMousePosLeft + 40;
-            newState.qX = ((relativeMousePosLeft - newState.x2)*-0.5) + relativeMousePosLeft + 16;
+            coordinates.left = this.startPosition.left - svgWidth - 40;
+            coordinates.width = svgWidth + 56;
+            coordinates.cirle2X = svgWidth + relativeMousePosLeft + 40;
+            coordinates.x1 = svgWidth + 48;
+            coordinates.x2 = svgWidth + relativeMousePosLeft + 40;
+            coordinates.qX = ((relativeMousePosLeft - coordinates.x2)*-0.5) + relativeMousePosLeft + 16;
         }
 
         if (relativeMousePosLeft <= 0) {
-            newState.cirle2X = 40;
-            newState.x2 = 40;
-            newState.qX = Math.abs(newState.qX);
+            coordinates.cirle2X = 40;
+            coordinates.x2 = 40;
+            coordinates.qX = Math.abs(coordinates.qX);
         }
 
-        this.setState( newState );
+        return coordinates;
     }
 
     mouseMove(event) {
         event.preventDefault();
-        this.updatePosition(event);
+        this.setState(this.getCableCoordinates(event));
     }
 
     onLineCLick() {

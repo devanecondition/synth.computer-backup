@@ -20,6 +20,7 @@ export default class Module extends React.Component {
 	constructor(props) {
 		super();
 		this.voice = props.voice;
+		this.id = props.id;
 	}
 
 	getFrontPanel() {
@@ -46,11 +47,15 @@ export default class Module extends React.Component {
 				<DeleteButton voice={this.voice} module={this} />
 				{this.props.module.jacks.map(function(jack, key) {
 					return (
-						<Jack name={jack.name} type={jack.type} voice={_this.voice} module={_this} key={"jack_" + key} />
+						<Jack id={key} name={jack.name} type={jack.type} voice={_this.voice} module={_this} ref={"jack_" + key} key={"jack_" + key} />
 					);
 				})}
 			</div>
 		);
+	}
+
+	getJackById(jackId=0) {
+		return this.refs['jack_' + jackId];
 	}
 
 	render() {

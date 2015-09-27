@@ -8,6 +8,8 @@ export default class Jack extends React.Component {
 		super();
 		this.voice = props.voice;
 		this.module = props.module;
+		this.id = props.id;
+
 		this.state = {
 			mouseOver: ''
 		}
@@ -25,13 +27,20 @@ export default class Jack extends React.Component {
 
 	onJackClick(event) {
 		if (this.props.type === 'outlet') {
-			this.voice.onNewCableEnabled(this, this.getPosition());
+			this.voice.onNewCableEnabled({
+				moduleId: this.module.id,
+				jackId: this.id
+			});
 		}
 	}
 
 	onJackHoverOn() {
 		if (this.props.type === 'inlet') {
-			this.voice.onJackHoverOn(this, this.getPosition());
+			this.voice.onJackHoverOn({
+				moduleId: this.module.id,
+				jackId: this.id
+			});
+			
 			this.setState({
 				mouseOver: ' mouseOver'
 			});

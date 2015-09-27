@@ -23,6 +23,10 @@ export default class Voice extends React.Component {
 		};		
 	    this._activeInlet = false;
 
+	    this.connectionComponents = [];
+
+	    this.cablesBuilt = false;
+
 		this.state = {
 			mode: 'edit',
 			modules : [
@@ -316,7 +320,32 @@ export default class Voice extends React.Component {
 					]
 				}
 			],
-			connections: []
+			connections: [
+				// {
+				// 	id: 1,
+	   //      		type: 'cable',
+	   //      		start: {
+	   //      			module_id: 10,
+	   //      			jack_id: 0
+	   //      		},
+	   //      		end: {
+	   //      			module_id: 16,
+	   //      			jack_id: 1
+	   //      		}
+		  //       },
+				{
+					id: 2,
+	        		type: 'cable',
+	        		start: {
+	        			module_id: 11,
+	        			jack_id: 2
+	        		},
+	        		end: {
+	        			module_id: 13,
+	        			jack_id: 0
+	        		}
+		        }
+			]
 		};
 	}
 
@@ -332,33 +361,107 @@ export default class Voice extends React.Component {
 		return this._activeInlet;
 	}
 
-	onJackHoverOn(jack, position) {
-		this._activeInlet = position
+	onJackHoverOn(jackParams) {
+		this._activeInlet = {
+			module_id: jackParams.moduleId,
+			jack_id: jackParams.jackId
+		}
 	}
 
 	onJackHoverOff() {
 		this._activeInlet = false
 	}
 
-	onNewCableEnabled(jack, position) {
-        document.addEventListener('mouseup', this._mouseUp);
-        this.setState({
-        	connections: this.state.connections.concat({
-        		type: 'cable',
-        		position:position,
-        		enabled: true
-	        })
+	onNewCableEnabled(cableParams) {
+		this.activeCable = this.createNewCable({
+			id: new Date().getTime(),
+    		type: 'cable',
+    		start: {
+    			module_id: cableParams.moduleId,
+    			jack_id: cableParams.jackId
+    		},
+    		enabled: true
         });
+        document.addEventListener('mouseup', this._mouseUp);
     }
 
     mouseUp(event) {
+
 		document.removeEventListener('mouseup', this._mouseUp);
-        if (!this._activeInlet) {    	
-	        this.state.connections.pop();
-	        this.setState({
-	        	connections: this.state.connections
-	        });
+
+        if (!this._activeInlet) {
+        	this.removeCable(this.activeCable.id);
+        } else {
+        	let cable = _.findWhere(this.state.connections, {id: this.activeCable.id});
+        	cable.end = this._activeInlet;
+    		this.cablesBuilt = false;
+        	this.setState({
+        		connections: this.state.connections
+        	});
         }
+
+        this.activeCable = null;
+    }
+
+    createNewCable(cable) {
+    	this.cablesBuilt = false;
+        this.setState({
+        	connections: this.state.connections.concat(cable)
+        });
+        return cable;
+    }
+
+    removeCable(cableId) {
+
+		let cableIndex = _.findIndex(this.state.connections, 'id', cableId);
+
+		this.cablesBuilt = false;
+
+        this.state.connections.splice(cableIndex, 1);
+        this.setState({
+        	connections: this.state.connections
+        });
+    }
+
+    getJackPosition(params) {
+
+    	params = params || {};
+
+		let startModule = this.refs['module_' + params.module_id];
+		let startJack = (startModule) ? startModule.getJackById(params.jack_id) : {};
+
+		if (_.isFunction(startJack.getPosition)) {
+			return startJack.getPosition();
+		} else {
+			return null;
+		}
+    }
+
+    buildCables() {
+
+		this.connectionComponents = this.state.connections.map(function(connection, keyId) {
+			let Connection = Connections[connection.type];
+    		let startPostion = this.getJackPosition(connection.start);
+    		let endPosition = this.getJackPosition(connection.end);
+    		let enabled = (endPosition) ? false : true;
+
+			return <Connection key={'cable_' + keyId++} voice={this} startPosition={startPostion} endPosition={endPosition} enabled={enabled} />			
+    	}, this);
+
+		this.cablesBuilt = true;
+    	this.forceUpdate();
+    }
+
+    componentDidUpdate() {
+    	if (!this.cablesBuilt) {
+    		this.buildCables();
+    	}
+    }
+
+    componentDidMount() {
+    	if (!this.cablesBuilt) {
+    		this.buildCables();
+    	}
     }
 
 	render() {
@@ -366,10 +469,7 @@ export default class Voice extends React.Component {
 		let connections;
 
 		if (this.state.mode === 'edit') {
-			connections = this.state.connections.map(function(connection, keyId) {
-				var Connection = Connections[connection.type];
-				return <Connection key={'cable_' + keyId++} voice={_this} position={connection.position} enabled={connection.enabled} />
-			})
+			connections = this.connectionComponents;
 		}
 
 		return (
@@ -378,7 +478,7 @@ export default class Voice extends React.Component {
 				<div className="patch-container">
 					{
 						this.state.modules.map(function(module, keyId) {
-							return <Module id={module.id} voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
+							return <Module id={module.id} ref={'module_' + module.id} voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
 						})
 					}
 					{connections}
