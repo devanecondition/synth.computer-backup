@@ -137,8 +137,8 @@ export default class Cable extends React.Component {
 
         return (
             <svg height={this.state.height} width={this.state.width} style={{top:this.state.top, left:this.state.left}}>
-                <circle cx={this.state.x1} cy={this.state.y1}></circle>
                 <path ref="cablePath" d={pathDirection} />
+                <circle cx={this.state.x1} cy={this.state.y1}></circle>
                 <circle cx={this.state.cirle2X} cy={this.state.cirle2Y}></circle>
             </svg>
 		);
