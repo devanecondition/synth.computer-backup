@@ -363,6 +363,15 @@ export default class Voice extends React.Component {
 
 	render() {
 		let _this = this;
+		let connections;
+
+		if (this.state.mode === 'edit') {
+			connections = this.state.connections.map(function(connection, keyId) {
+				var Connection = Connections[connection.type];
+				return <Connection key={'cable_' + keyId++} voice={_this} position={connection.position} enabled={connection.enabled} />
+			})
+		}
+
 		return (
 			<div>
 				<Header voice={_this} />
@@ -372,12 +381,7 @@ export default class Voice extends React.Component {
 							return <Module id={module.id} voice={_this} module={module} key={'voice_' + keyId++} name={module.name} ui={module.ui} />
 						})
 					}
-					{
-						this.state.connections.map(function(connection, keyId) {
-							var Connection = Connections[connection.type];
-							return <Connection key={'cable_' + keyId++} voice={_this} position={connection.position} enabled={connection.enabled} />
-						})
-					}
+					{connections}
 				</div>
 			</div>
 		);

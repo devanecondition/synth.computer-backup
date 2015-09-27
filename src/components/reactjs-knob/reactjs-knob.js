@@ -331,8 +331,6 @@ class KnobCanvas extends React.Component {
 
         if (value == this.changeValue) return;
 
-        if (this.changeHook && (this.changeHook(value) === false)) return;
-
         this.component.setState({
             value: value
         });
