@@ -341,7 +341,7 @@ export default class Voice extends React.Component {
 	}
 
 	onNewCableEnabled(jack, position) {
-        document.addEventListener('mouseup', this._mouseUp.bind(this));
+        document.addEventListener('mouseup', this._mouseUp);
         this.setState({
         	connections: this.state.connections.concat({
         		type: 'cable',
@@ -352,6 +352,7 @@ export default class Voice extends React.Component {
     }
 
     mouseUp(event) {
+		document.removeEventListener('mouseup', this._mouseUp);
         if (!this._activeInlet) {    	
 	        this.state.connections.pop();
 	        this.setState({

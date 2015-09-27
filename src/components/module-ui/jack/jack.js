@@ -30,7 +30,6 @@ export default class Jack extends React.Component {
 	}
 
 	onJackHoverOn() {
-// console.log('onJackHoverOn');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOn(this, this.getPosition());
 			this.setState({
@@ -40,7 +39,6 @@ export default class Jack extends React.Component {
 	}
 
 	onJackHoverOff() {
-// console.log('onJackHoverOff');
 		if (this.props.type === 'inlet') {
 			this.voice.onJackHoverOff(this);
 			this.setState({
