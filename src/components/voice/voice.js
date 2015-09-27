@@ -375,7 +375,7 @@ export default class Voice extends React.Component {
 					{
 						this.state.connections.map(function(connection, keyId) {
 							var Connection = Connections[connection.type];
-							return <Connection voice={_this} position={connection.position} enabled={connection.enabled} />
+							return <Connection key={'cable_' + keyId++} voice={_this} position={connection.position} enabled={connection.enabled} />
 						})
 					}
 				</div>
