@@ -321,29 +321,21 @@ export default class Voice extends React.Component {
 				}
 			],
 			connections: [
-				// {
-				// 	id: 1,
-	   //      		type: 'cable',
-	   //      		start: {
-	   //      			module_id: 10,
-	   //      			jack_id: 0
-	   //      		},
-	   //      		end: {
-	   //      			module_id: 16,
-	   //      			jack_id: 1
-	   //      		}
-		  //       },
+				{
+					id: 1,
+	        		type: 'cable',
+	        		start_module_id: 10,
+        			start_jack_id: 0,
+	        		end_module_id: 16,
+        			end_jack_id: 1
+		        },
 				{
 					id: 2,
 	        		type: 'cable',
-	        		start: {
-	        			module_id: 11,
-	        			jack_id: 2
-	        		},
-	        		end: {
-	        			module_id: 13,
-	        			jack_id: 0
-	        		}
+	        		start_module_id: 11,
+        			start_jack_id: 2,
+	        		end_module_id: 13,
+        			end_jack_id: 0
 		        }
 			]
 		};
@@ -351,7 +343,9 @@ export default class Voice extends React.Component {
 
 	deleteModule(module) {
 		let moduleIndex = _.findIndex(this.state.modules, 'id', module.props.id);
+		// let moduleConnections = 
 		this.state.modules.splice(moduleIndex,1);
+this.cablesBuilt = false;
 		this.setState({
 			modules: this.state.modules
 		});
@@ -363,8 +357,8 @@ export default class Voice extends React.Component {
 
 	onJackHoverOn(jackParams) {
 		this._activeInlet = {
-			module_id: jackParams.moduleId,
-			jack_id: jackParams.jackId
+			end_module_id: jackParams.moduleId,
+			end_jack_id: jackParams.jackId
 		}
 	}
 
@@ -376,10 +370,8 @@ export default class Voice extends React.Component {
 		this.activeCable = this.createNewCable({
 			id: new Date().getTime(),
     		type: 'cable',
-    		start: {
-    			module_id: cableParams.moduleId,
-    			jack_id: cableParams.jackId
-    		},
+    		start_module_id: cableParams.moduleId,
+			start_jack_id: cableParams.jackId,
     		enabled: true
         });
         document.addEventListener('mouseup', this._mouseUp);
@@ -392,12 +384,14 @@ export default class Voice extends React.Component {
         if (!this._activeInlet) {
         	this.removeCable(this.activeCable.id);
         } else {
-        	let cable = _.findWhere(this.state.connections, {id: this.activeCable.id});
-        	cable.end = this._activeInlet;
+        	let connections = this.state.connections;
+        	let cable = _.findWhere(connections, {id: this.activeCable.id});
+        	_.assign(cable, this._activeInlet);
     		this.cablesBuilt = false;
         	this.setState({
-        		connections: this.state.connections
+        		connections: connections
         	});
+        	this.forceUpdate();
         }
 
         this.activeCable = null;
@@ -427,11 +421,11 @@ export default class Voice extends React.Component {
 
     	params = params || {};
 
-		let startModule = this.refs['module_' + params.module_id];
-		let startJack = (startModule) ? startModule.getJackById(params.jack_id) : {};
+		let module = this.refs['module_' + params.module_id];
+		let jack = (module) ? module.getJackById(params.jack_id) : {};
 
-		if (_.isFunction(startJack.getPosition)) {
-			return startJack.getPosition();
+		if (_.isFunction(jack.getPosition)) {
+			return jack.getPosition();
 		} else {
 			return null;
 		}
@@ -441,8 +435,8 @@ export default class Voice extends React.Component {
 
 		this.connectionComponents = this.state.connections.map(function(connection, keyId) {
 			let Connection = Connections[connection.type];
-    		let startPostion = this.getJackPosition(connection.start);
-    		let endPosition = this.getJackPosition(connection.end);
+    		let startPostion = this.getJackPosition({module_id: connection.start_module_id, jack_id: connection.start_jack_id});
+    		let endPosition = this.getJackPosition({module_id: connection.end_module_id, jack_id: connection.end_jack_id});
     		let enabled = (endPosition) ? false : true;
 
 			return <Connection key={'cable_' + keyId++} voice={this} startPosition={startPostion} endPosition={endPosition} enabled={enabled} />			
@@ -465,6 +459,7 @@ export default class Voice extends React.Component {
     }
 
 	render() {
+
 		let _this = this;
 		let connections;
 

@@ -9,7 +9,6 @@ export default class Cable extends React.Component {
         this.voice = props.voice;
         this.startPosition = props.startPosition || {};
         this.endPosition = props.endPosition || {};
-        this.cableLength = 0;
 
         this.state = this.getCableCoordinates();
         this.state.enabled = (typeof props.enabled !== 'undefined') ? props.enabled : true
@@ -49,13 +48,12 @@ export default class Cable extends React.Component {
 
         event = event || {};
 
-        let endPointTop = this.endPosition.top || event.pageY || this.startPosition.top + 8;
-        let endPointLeft = this.endPosition.left || event.pageX || this.startPosition.left + 8;
+        let endPointTop = this.endPosition.top + 8 || event.pageY || this.startPosition.top + 8;
+        let endPointLeft = this.endPosition.left + 8 || event.pageX || this.startPosition.left + 8;
         let relativeMousePosTop = endPointTop - this.startPosition.top;
         let relativeMousePosLeft = endPointLeft - this.startPosition.left;
         let svgHeight = Math.abs(relativeMousePosTop);
         let svgWidth = Math.abs(relativeMousePosLeft);
-        let halfLength = this.cableLength/3;
         let coordinates = {
             top: this.startPosition.top,
             left: this.startPosition.left,
@@ -65,11 +63,13 @@ export default class Cable extends React.Component {
             x2: relativeMousePosLeft,
             y1: 8,
             y2: relativeMousePosTop,
-            qX: relativeMousePosLeft - 8,
-            qY: halfLength,
+            qX: (relativeMousePosLeft - 8)/2,
             cirle2X: relativeMousePosLeft,
             cirle2Y: relativeMousePosTop
         };
+
+        coordinates.qY = (relativeMousePosLeft <= 8) ? coordinates.x1 - coordinates.x2 : coordinates.x2 - coordinates.x1;
+        coordinates.qY = coordinates.qY * 0.3;
 
         if (relativeMousePosTop <= 8) {
             // 40px is the height of a jack, so make sure svg is always tall/wide enough to position connection
@@ -78,7 +78,7 @@ export default class Cable extends React.Component {
             coordinates.cirle2Y = svgHeight + relativeMousePosTop + 40;
             coordinates.y1 = svgHeight + 48;
             coordinates.y2 = svgHeight + relativeMousePosTop + 40;
-            coordinates.qY = halfLength + svgHeight + 40;
+            coordinates.qY = coordinates.qY + svgHeight + 40;
         }
 
         if (relativeMousePosTop <= 0) {
@@ -111,10 +111,6 @@ export default class Cable extends React.Component {
 
     onLineCLick() {
         alert('clicky clicky!');
-    }
-
-    componentDidUpdate() {
-        this.cableLength = React.findDOMNode(this.refs.cablePath).getTotalLength();
     }
 
 	render() {
