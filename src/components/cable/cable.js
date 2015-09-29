@@ -25,7 +25,10 @@ export default class Cable extends React.Component {
     mouseUp(event) {
 
         let activeInlet = this.voice.getActiveInlet();
-        let activeInletPos = this.voice.getJackPosition(activeInlet);
+        let activeInletPos = this.voice.getJackPosition({
+            module_id: activeInlet.end_module_id,
+            jack_id: activeInlet.end_jack_id
+        });
 
         if (activeInletPos) {
     

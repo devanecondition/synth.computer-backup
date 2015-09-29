@@ -343,9 +343,8 @@ export default class Voice extends React.Component {
 
 	deleteModule(module) {
 		let moduleIndex = _.findIndex(this.state.modules, 'id', module.props.id);
-		// let moduleConnections = 
 		this.state.modules.splice(moduleIndex,1);
-this.cablesBuilt = false;
+		this.cablesBuilt = false;
 		this.setState({
 			modules: this.state.modules
 		});

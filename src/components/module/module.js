@@ -21,7 +21,6 @@ export default class Module extends React.Component {
 		super();
 		this.voice = props.voice;
 		this.id = props.id;
-		this.connections = [];
 	}
 
 	getFrontPanel() {
